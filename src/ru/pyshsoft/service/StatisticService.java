@@ -4,14 +4,14 @@ import ru.pyshsoft.Observer;
 import ru.pyshsoft.model.CalculateResult;
 
 import java.util.Calendar;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class StatisticService implements Observer<CalculateResult> {
     private Calendar startTime;
     private Calendar stopTime;
 
-    private final List<CalculateResult> calculateResults = new CopyOnWriteArrayList<>();
+    private final Set<CalculateResult> calculateResults = ConcurrentHashMap.newKeySet();
 
     @Override
     public void update(CalculateResult result) {

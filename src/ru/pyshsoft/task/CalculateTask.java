@@ -1,5 +1,6 @@
 package ru.pyshsoft.task;
 
+import ru.pyshsoft.Notifier;
 import ru.pyshsoft.Observer;
 import ru.pyshsoft.model.CalculateResult;
 import ru.pyshsoft.model.DownloadResult;
@@ -8,7 +9,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
-public class CalculateTask implements Callable<CalculateResult> {
+public class CalculateTask implements Callable<CalculateResult>, Notifier<CalculateResult> {
 
     private final DownloadResult downloadResult;
     private final Set<Observer<CalculateResult>> observers;
@@ -27,9 +28,9 @@ public class CalculateTask implements Callable<CalculateResult> {
         do {
             check = r.nextInt(2000000);
         } while (!downloadResult.check(check));
-
         result.found = true;
-        observers.forEach(observer -> observer.update(result));
+
+        notifyObservers(result);
 
         return result;
     }
@@ -37,6 +38,12 @@ public class CalculateTask implements Callable<CalculateResult> {
     @Override
     public CalculateResult call() {
         return calculate();
+    }
+
+
+    @Override
+    public void notifyObservers(CalculateResult result) {
+        observers.forEach(observer -> observer.update(result));
     }
 }
 
